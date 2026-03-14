@@ -21,7 +21,11 @@ CONFIG = {
 
     BEACON_FAST = 30,
     BEACON_SLOW = 180,
-    COMMENT = "Air820 APRS Tracker"
+    COMMENT = "Air820 APRS Tracker",
+    ADD_VOLTAGE = true,  -- 是否加入电压数据
+
+    -- 路径及优化
+    PATH = "WIDE1-1,WIDE2-1",  -- 默认使用的路径
 }
 
 function cfg_load()
