@@ -1,16 +1,36 @@
-function M.read()
-    local volt = adc.read(0) -- 读取电压
-    local temp = mcu.temp()
-    local batt = math.floor((volt - 3300) / 900 * 100) -- 电量百分比计算
-    return batt, temp, volt -- 返回电量，温度与电压值
+tele = {}
+
+local seq = 0
+
+function tele.read()
+    -- adc.read() 返回两个值：(原始值, 换算值)
+    -- CH_VBAT 换算值单位 mV；CH_CPU 换算值单位 0.001°C
+    adc.open(adc.CH_VBAT)
+    local _, volt = adc.read(adc.CH_VBAT)
+    adc.close(adc.CH_VBAT)
+
+    adc.open(adc.CH_CPU)
+    local _, temp_raw = adc.read(adc.CH_CPU)
+    adc.close(adc.CH_CPU)
+
+    local temp = math.floor((temp_raw or 0) / 1000)
+
+    -- 3300mV = 0%，4200mV = 100%
+    local batt = math.floor((volt - 3300) / 900 * 100)
+    batt = math.max(0, math.min(100, batt))
+
+    return batt, temp, volt
 end
 
-function M.frame(codec)
-    local b, t, v = M.read()
-    local imei = mobile.imei() or "UNKNOWN" -- 获取IMEI码
-    local rssi = mobile.rssi() or 0        -- 信号强度
-    local sat_used, sat_total = gps.sats() -- 当前卫星数据
-    -- 将数据封装为APRS Telemetry字符串
-    return codec.tele("seq", b, t, v) ..
-        string.format(" IMEI:%s RSSI:%ddBm Sat:%d/%d", imei, rssi, sat_used, sat_total)
+function tele.frame()
+    seq = (seq + 1) % 1000
+
+    local b, t, v = tele.read()
+
+    local imei  = string.sub(misc.getImei(), -4, -1) or "0000"
+    local rssi  = net.getRssi() or 0
+    local used, total = gpsGetSats()
+
+    return codec.tele(seq, b, t, v) ..
+        string.format(" IMEI:%s RSSI:%d Sat:%d/%d", imei, rssi, used, total)
 end
