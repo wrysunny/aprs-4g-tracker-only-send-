@@ -1,7 +1,7 @@
-local conn      = nil  -- 当前 TCP socket
+local conn      = nil -- 当前 TCP socket
 
 local CALLSIGN  = config.CALL .. "-" .. config.SSID
-local CHECK_ITV = 3 * 1000       -- 3 秒检测一次连接状态
+local CHECK_ITV = 3 * 1000 -- 3 秒检测一次连接状态
 local HOST      = config.aprs_host or "rotate.aprs2.net"
 local PORT      = tonumber(config.aprs_port or 14580)
 
@@ -104,7 +104,6 @@ sys.taskInit(function()
                 if conn then conn:close() end
                 conn = nil
             end
-            
         else
             -- 3. 维护心跳
             keepalive_tick = keepalive_tick + 1
@@ -116,10 +115,11 @@ sys.taskInit(function()
                     if not keep_ok then
                         log.error("socket", "心跳包发送失败，准备重连")
                         conn:close()
-                        conn = nil     -- 触发下次循环重连
+                        conn = nil -- 触发下次循环重连
                     end
                 else
                     log.warn("socket", "由于连接未建立，跳过本次心跳发送")
+                end
             end
         end
     end
