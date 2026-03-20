@@ -93,7 +93,7 @@ sys.taskInit(function()
         end
         -- 2. 处理业务逻辑 (发送位置包)
         local result, _ = sys.waitUntil("APRS_MSG", CHECK_ITV)
-        if result then
+        if result and GpsIsReady() and tonumber(beacon.speed_kmh) ~= nil and beacon.speed_kmh >= config.slow_speed then
             local data = BuildBeaconPacket()
 
             if conn and conn:send(data, 10) then

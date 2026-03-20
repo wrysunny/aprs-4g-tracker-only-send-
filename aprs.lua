@@ -30,9 +30,9 @@ function BuildBeaconPacket()
     local posInfo = string.format(
         "@%sz%s%s%s%s%s/%s%s %s",
         ts,
-        beacon.lat or "0000.00N",
+        beacon.lat or "3206.07N",
         config.symbol_table,
-        beacon.long or "00000.00E",
+        beacon.long or "11852.90E",
         config.symbol_symbol,
         cse, spd,
         altStr,
