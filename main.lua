@@ -1,5 +1,5 @@
 PROJECT = "4G_APRS_Tracker"
-VERSION = "2.0.0"
+VERSION = "2.2.1"
 
 require "misc"
 require "log"
@@ -9,7 +9,7 @@ require "net"
 require "socket"
 require "netLed"
 require "gpsZkw"
--- require "agpsZkw" -- 每4小时下载星历
+require "agpsZkw" -- 每4小时下载星历
 
 -- 这边是自己实现的lua
 require "config"
